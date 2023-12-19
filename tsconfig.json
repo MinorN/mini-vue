@@ -30,7 +30,13 @@
       "lib": [
         "esnext",
         "dom"
-      ]
+      ],
+      "baseUrl": ".",
+      "paths": {
+        "@vue/*": [
+          "packages/*src"
+        ]
+      }
     },
     // 入口
     "include": [
