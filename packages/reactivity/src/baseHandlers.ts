@@ -1,4 +1,4 @@
-
+import { track, trigger } from './effect'
 export const mutableHandlers: ProxyHandler<object> = {
     // 核心是 get，set 方法
     get(target: object, key: string | symbol, receiver: object) {
