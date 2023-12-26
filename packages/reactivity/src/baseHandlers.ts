@@ -3,7 +3,7 @@ export const mutableHandlers: ProxyHandler<object> = {
     // 核心是 get，set 方法
     get(target: object, key: string | symbol, receiver: object) {
         const res = Reflect.get(target, key, receiver)
-        // 需要进行 依赖收集
+        // 需要进行 依赖收集 当值更新的时候 可以触发当前的依赖 更新数据
         track(target, key)
 
         return res

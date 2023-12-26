@@ -1,7 +1,4 @@
 
-
-
-
 export function effect<T = any>(fn: () => T) {
     const _effect = new ReactiveEffect(fn)
 
@@ -24,9 +21,27 @@ export class ReactiveEffect<T = any>{
     }
 }
 
+type KeyToDepMap = Map<any, ReactiveEffect>
+
+const targetMap = new WeakMap<any, KeyToDepMap>()
 
 export function track(target: object, key: unknown) {
+    // 如果当前的 activeEffect 不存在，则直接返回
+    if (!activeEffect) {
+        return
+    }
 
+    // 先尝试读取是否存在对应关系
+    let depsMap = targetMap.get(target)
+
+    // 如果没有获取到，创建 target - map 关系
+    if (!depsMap) {
+        depsMap = new Map()
+        targetMap.set(target, depsMap)
+    }
+
+    // 创建 map - fn 关系
+    depsMap.set(key, activeEffect)
 }
 
 export function trigger(target: object, key: unknown, value: unknown) {
