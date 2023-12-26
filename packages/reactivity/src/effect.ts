@@ -45,5 +45,19 @@ export function track(target: object, key: unknown) {
 }
 
 export function trigger(target: object, key: unknown, value: unknown) {
+    // 从 targetMap 找到对应的 effect 并执行
+    const depsMap = targetMap.get(target)
 
-}
+    if (!depsMap) {
+        return
+    }
+
+    // 找到了对应的 map
+    const effect = depsMap.get(key) as ReactiveEffect
+
+    if (!effect) {
+        return
+    }
+
+    effect.fn()
+} 
