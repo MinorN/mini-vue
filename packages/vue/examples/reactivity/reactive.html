@@ -8,13 +8,23 @@
     <script src="../../dist/vue.js"></script>
 </head>
 
-<body></body>
+<body>
+
+    <div id="app"></div>
+</body>
 
 <script>
-    const { reactive } = Vue
+    const { reactive, effect } = Vue
     const testData = reactive({
         name: '叫我小N就好啦'
     })
+
+    effect(() => {
+        const el = document.querySelector('#app')
+        console.log('run')
+        el.innerText = testData.name
+    })
+
 
     console.log(testData)
 </script>
