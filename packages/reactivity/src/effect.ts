@@ -1,3 +1,4 @@
+import { Dep, createDep } from "./dep"
 
 export function effect<T = any>(fn: () => T) {
     const _effect = new ReactiveEffect(fn)
@@ -21,7 +22,7 @@ export class ReactiveEffect<T = any>{
     }
 }
 
-type KeyToDepMap = Map<any, ReactiveEffect>
+type KeyToDepMap = Map<any, Dep>
 
 const targetMap = new WeakMap<any, KeyToDepMap>()
 
@@ -40,8 +41,16 @@ export function track(target: object, key: unknown) {
         targetMap.set(target, depsMap)
     }
 
-    // 创建 map - fn 关系
-    depsMap.set(key, activeEffect)
+    let dep = depsMap.get(key)
+    if (!dep) {
+        depsMap.set(key, dep = createDep())
+    }
+
+    trackEffects(dep)
+}
+
+export function trackEffects(dep: Dep) {
+    dep.add(activeEffect!)
 }
 
 export function trigger(target: object, key: unknown, value: unknown) {
@@ -53,11 +62,23 @@ export function trigger(target: object, key: unknown, value: unknown) {
     }
 
     // 找到了对应的 map
-    const effect = depsMap.get(key) as ReactiveEffect
+    const dep = depsMap.get(key)
 
-    if (!effect) {
+    if (!dep) {
         return
     }
+    triggerEffects(dep)
+}
 
-    effect.fn()
-} 
+export function triggerEffects(dep: Dep) {
+    const effects = Array.isArray(dep) ? dep : [...dep]
+    // 触发依赖
+
+    for (let effect of effects) {
+        triggerEffect(effect)
+    }
+}
+
+export function triggerEffect(effect: ReactiveEffect) {
+    effect.run()
+}

@@ -10,7 +10,10 @@
 
 <body>
 
-    <div id="app"></div>
+    <div id="app">
+        <div id="p1"></div>
+        <div id="p2"></div>
+    </div>
 </body>
 
 <script>
@@ -20,13 +23,20 @@
     })
 
     effect(() => {
-        const el = document.querySelector('#app')
+        const el = document.querySelector('#p1')
+        console.log('run')
+        el.innerText = testData.name
+    })
+
+    effect(() => {
+        const el = document.querySelector('#p2')
         console.log('run')
         el.innerText = testData.name
     })
 
     setTimeout(() => {
         testData.name = 'hello world !'
+        console.log('xxx')
     }, 2000)
 
 
